@@ -11,24 +11,24 @@ class Program
 
         if (number >= 90)
         {
-            Console.WriteLine("A");
+            Console.WriteLine($"Your grade is: A");
         }
         else if (number >= 80)
         {
-            Console.WriteLine("B");
+            Console.WriteLine($"Your grade is: B");
 
         }
         else if (number >= 70)
         {
-            Console.WriteLine("C");
+            Console.WriteLine($"Your grade is: C");
         }
         else if (number >= 60)
         {
-            Console.WriteLine("D");
+            Console.WriteLine($"Your grade is: D");
         }
         else if (number < 60)
         {
-            Console.WriteLine("F");
+            Console.WriteLine($"Your grade is: F");
         }
     
     }
