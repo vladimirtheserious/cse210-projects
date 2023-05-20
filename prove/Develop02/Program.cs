@@ -1,161 +1,168 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 
-namespace JournalApp
+class Program
 {
-    
-    abstract class JournalEntry
+    static void Main(string[] args)
     {
-        public string Prompt { get; set; }
-        public string Response { get; set; }
-        public DateTime Date { get; set; }
+        Journal journal = new Journal();
+        string choices = "";
+        do
+        {
+            Console.WriteLine("Hello Develop02 World!");
+            Console.WriteLine("Please select one of the following choices:");
+            Console.WriteLine("1. Write");
+            Console.WriteLine("2. Display");
+            Console.WriteLine("3. Load");
+            Console.WriteLine("4. Save");
+            Console.WriteLine("5. Quit");
+            Console.WriteLine("What would you like to do?");
+            choices = Console.ReadLine();
 
-        public abstract void Display();
+            if(choices == "1")
+            {
+                journal.WriteEntry();
+            }
+            else if(choices == "2")
+            {
+                journal.DisplayEntries();
+            }
+            else if(choices == "3")
+            {
+                journal.LoadEntries();
+            }
+            else if(choices == "4")
+            {
+                journal.SaveEntries();
+            }
+        } while (choices != "5");
+    }
+}
+
+class Journal
+{
+    private Entry[] entries;
+    private PromptGenerator promptGenerator;
+    private QuoteGenerator quoteGenerator;
+
+    public Journal()
+    {
+        promptGenerator = new PromptGenerator();
+        quoteGenerator = new QuoteGenerator();
+        entries = new Entry[0];
     }
 
-    class ConcreteJournalEntry : JournalEntry
+    public void WriteEntry()
     {
-        public override void Display()
+        Console.WriteLine("Here's your prompt for today:");
+        string prompt = promptGenerator.GeneratePrompt();
+        Console.WriteLine(prompt);
+
+        Console.WriteLine("What's on your mind today?");
+        string answer = Console.ReadLine();
+
+        Console.WriteLine("How are you feeling right now?");
+        string mood = Console.ReadLine();
+
+        DateTime currentDate = DateTime.Now;
+        Entry newEntry = new Entry(prompt, answer, mood, currentDate);
+        Array.Resize(ref entries, entries.Length + 1);
+        entries[entries.Length - 1] = newEntry;
+
+        Console.WriteLine("Here's a quote to inspire you:");
+        string quote = quoteGenerator.GenerateQuote();
+        Console.WriteLine(quote);
+    }
+
+    public void DisplayEntries()
+    {
+        if (entries.Length == 0)
         {
-            Console.WriteLine("{0} - {1}: {2}", Date, Prompt, Response);
+            Console.WriteLine("No entries found.");
+            return;
+        }
+
+        Console.WriteLine("Your entries so far:");
+        foreach (Entry entry in entries)
+        {
+            Console.WriteLine(entry.ToString());
         }
     }
 
-   
-    class Journal
+    public void LoadEntries()
     {
-        private List<JournalEntry> entries = new List<JournalEntry>();
-
-   
-        public void AddEntry(JournalEntry entry)
-        {
-            entries.Add(entry);
-        }
-
-      
-        public void DisplayEntries()
-        {
-            foreach (JournalEntry entry in entries)
-            {
-                entry.Display();
-            }
-        }
-
-       
-        public void SaveToFile(string filename)
-        {
-            using (StreamWriter writer = new StreamWriter(filename))
-            {
-                foreach (JournalEntry entry in entries)
-                {
-                    writer.WriteLine("{0}\t{1}\t{2}", entry.Date, entry.Prompt, entry.Response);
-                }
-            }
-        }
-
-       
-        public void LoadFromFile(string filename)
-        {
-            entries.Clear();
-
-            using (StreamReader reader = new StreamReader(filename))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    string[] fields = line.Split('\t');
-                    JournalEntry entry = new ConcreteJournalEntry();
-                    entry.Date = DateTime.Parse(fields[0]);
-                    entry.Prompt = fields[1];
-                    entry.Response = fields[2];
-                    entries.Add(entry);
-                }
-            }
-        }
+        // load entries from file
     }
 
-  
-    class Program
+    public void SaveEntries()
     {
-      
-        static List<string> prompts = new List<string>()
-        {
-            "Who was the most interesting person I interacted with today?",
-            "What was the best part of my day?",
-            "How did I see the hand of the Lord in my life today?",
-            "What was the strongest emotion I felt today?",
-            "If I had one thing I could do over today, what would it be?"
-        };
+        // save entries to file
+    }
+}
 
-        static void Main(string[] args)
-        {
-            Journal journal = new Journal();
+class Entry
+{
+    private string prompt;
+    private string answer;
+    private string mood;
+    private DateTime dateTime;
 
-            while (true)
-            {
-        
-                Console.WriteLine("\nSelect an option:");
-                Console.WriteLine("1. Write a new entry");
-                Console.WriteLine("2. Display the journal");
-                Console.WriteLine("3. Save the journal to a file");
-                Console.WriteLine("4. Load the journal from a file");
-                Console.WriteLine("5. Exit");
+    public Entry(string prompt, string answer, string mood, DateTime dateTime)
+    {
+        this.prompt = prompt;
+        this.answer = answer;
+        this.mood = mood;
+        this.dateTime = dateTime;
+    }
 
-              
-                Console.Write("\nEnter choice: ");
-                int choice = int.Parse(Console.ReadLine());
+    public override string ToString()
+    {
+        return $"Date: {dateTime.ToString()} - Prompt: {prompt} - Answer: {answer} - Mood: {mood}";
+    }
+}
 
-                switch (choice)
-                {
-                    case 1:
-                     
-                        Random random = new Random();
-                        string prompt = prompts[random.Next(prompts.Count)];
+class PromptGenerator
+{
+    private string[] prompts = {"What are three things that you're grateful for today?",
+                                "Describe a recent challenge you faced and how you overcame it.",
+                                "Write about a moment that made you feel proud of yourself.",
+                                "What's something that you've been procrastinating on, and what steps can you take to start working on it?",
+                                "Write about a recent accomplishment that you're proud of."};
+    private Random random;
 
-                       
-                        Console.Write("\n{0}\n", prompt);
-                        string response = Console.ReadLine();
+    public PromptGenerator()
+    {
+        random = new Random();
+    }
 
-                    
-                        JournalEntry entry = new ConcreteJournalEntry();
-                        entry.Prompt = prompt;
-                        entry.Response = response;
-                        entry.Date = DateTime.Now;
-                        journal.AddEntry(entry);
-                        break;
+    public string GeneratePrompt()
+    {
+        int randomNumber = random.Next(0, prompts.Length);
+        return prompts[randomNumber];
+    }
+}
 
-                    case 2:
-                      
-                        journal.DisplayEntries();
-                        break;
+class QuoteGenerator
+{
+    private string[] quotes = {
+        "Believe you can and you're halfway there. -Theodore Roosevelt",
+        "You miss 100% of the shots you don't take. -Wayne Gretzky",
+        "It does not matter how slowly you go as long as you do not stop. -Confucius",
+        "Success is not final, failure is not fatal: it is the courage to continue that counts. -Winston Churchill",
+        "The only way to do great work is to love what you do. -Steve Jobs"
+    };
 
-                    case 3:
-                   
-                        Console.Write("\nEnter filename to save to: ");
-                        string filename = Console.ReadLine();
-                        journal.SaveToFile(filename);
-                        break;
+    public string GetRandomQuote()
+    {
+        Random random = new Random();
+        int index = random.Next(0, quotes.Length);
+        return quotes[index];
+    }
 
-                    case 4:
-        
-                        Console.Write("\nEnter filename to load from: ");
-                        filename = Console.ReadLine();
-                        journal.LoadFromFile(filename);
-                        break;
-
-                    case 5:
-        
-                        Environment.Exit(0);
-                        break;
-
-                    default:
-         
-                        Console.WriteLine("\nInvalid choice, please try again.");
-                        break;
-                }
-            }
-        }
+    public void DisplayRandomQuote()
+    {
+        string quote = GetRandomQuote();
+        Console.WriteLine("Quote of the day:");
+        Console.WriteLine(quote);
     }
 }
 
