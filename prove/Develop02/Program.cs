@@ -8,7 +8,6 @@ class Program
         string choices = "";
         do
         {
-            Console.WriteLine("Hello Develop02 World!");
             Console.WriteLine("Please select one of the following choices:");
             Console.WriteLine("1. Write");
             Console.WriteLine("2. Display");
