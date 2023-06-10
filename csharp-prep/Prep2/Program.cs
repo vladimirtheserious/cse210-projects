@@ -4,32 +4,25 @@ class Program
 {
     static void Main(string[] args)
     {
+        Console.WriteLine("What is the grade percantage?");
+        string text = Console.ReadLine();
+        int percantage = int.Parse(text);
 
-        Console.WriteLine("What is your grade percentage?");
-        string grade = Console.ReadLine();
-        int number = int.Parse(grade);
-
-        if (number >= 90)
+        if (percantage >= 90)
         {
-            Console.WriteLine($"Your grade is: A");
+            Console.WriteLine("Your grade is A");
         }
-        else if (number >= 80)
+        else if (percantage >= 80)
         {
-            Console.WriteLine($"Your grade is: B");
-
+            Console.WriteLine("Your grade is B");
         }
-        else if (number >= 70)
+        else if (percantage >= 70)
         {
-            Console.WriteLine($"Your grade is: C");
+            Console.WriteLine("Your grade is D");
         }
-        else if (number >= 60)
+        else if (percantage < 60)
         {
-            Console.WriteLine($"Your grade is: D");
+            Console.WriteLine("Your grade is F");
         }
-        else if (number < 60)
-        {
-            Console.WriteLine($"Your grade is: F");
-        }
-    
     }
 }
