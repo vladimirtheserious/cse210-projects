@@ -13,7 +13,7 @@ public class Event
         _gatheringLocation = gatheringLocation;
         _topic = topic;
     }
-
+    ////
     
     public string GetGatheringName()
     {
@@ -31,3 +31,5 @@ public class Event
  
    }
 }
+
+////
